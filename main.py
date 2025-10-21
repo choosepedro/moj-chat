@@ -25,6 +25,9 @@ async def chat(request: Request):
     }
 
     headers = {"Authorization": f"Bearer {API_KEY}"}
-    response = requests.post("https://api.groq.com/openai/v1/chat/completions
+    response = requests.post("https://api.groq.com/openai/v1/chat/completions",
+                         json=payload, headers=headers)
+
+
 
 
