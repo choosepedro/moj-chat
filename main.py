@@ -29,7 +29,7 @@ async def chat(request: Request):
             return JSONResponse({"reply": "❌ GROQ_API_KEY chýba na serveri."}, status_code=500)
 
         payload = {
-            "model": "llama3-8b-8192",
+            "model": "llama-3.1-8b-instant",
             "messages": [
                 {"role": "system", "content": "Si priateľský slovenský chatbot."},
                 {"role": "user", "content": user_input}
