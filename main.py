@@ -3,6 +3,16 @@ from fastapi.responses import FileResponse, JSONResponse
 import requests
 import os
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # povolí všetky webové domény (vrátane tvojej)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app = FastAPI()
 
 API_KEY = os.getenv("GROQ_API_KEY")
@@ -27,6 +37,7 @@ async def chat(request: Request):
     headers = {"Authorization": f"Bearer {API_KEY}"}
     response = requests.post("https://api.groq.com/openai/v1/chat/completions",
                          json=payload, headers=headers)
+
 
 
 
