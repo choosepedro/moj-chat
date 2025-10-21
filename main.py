@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 import requests
 import os
 
@@ -37,6 +38,7 @@ async def chat(request: Request):
     headers = {"Authorization": f"Bearer {API_KEY}"}
     response = requests.post("https://api.groq.com/openai/v1/chat/completions",
                          json=payload, headers=headers)
+
 
 
 
