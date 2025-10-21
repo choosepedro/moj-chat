@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Môj Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 { color: #00ff99; }
+    #chat-box {
+      width: 90%;
+      max-width: 500px;
+      height: 400px;
+      background: #222;
+      border-radius: 10px;
+      padding: 10px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    .msg { margin: 5px 0; }
+    .user { color: #00ff99; }
+    .bot { color: #00bfff; }
+    input {
+      width: 80%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+    button {
+      padding: 10px 15px;
+      margin-left: 5px;
+      background: #00ff99;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Môj Chatbot 🤖</h1>
+  <div id="chat-box"></div>
+  <div>
+    <input id="user-input" type="text" placeholder="Napíš správu..." />
+    <button onclick="sendMessage()">Odoslať</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const input = document.getElementById('user-input');
+    const API_URL = "https://moj-chat.onrender.com/chat"; // tvoj backend
+
+    async function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
+      appendMessage("Ty", message, "user");
+      input.value = "";
+
+      appendMessage("Bot", "🕐 premýšľam...", "bot");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        chatBox.lastChild.textContent = "Bot: " + data.reply;
+      } catch (err) {
+        chatBox.lastChild.textContent = "❌ Chyba pri spojení so serverom";
+      }
+    }
+
+    function appendMessage(sender, text, cls) {
+      const msg = document.createElement("div");
+      msg.className = "msg " + cls;
+      msg.textContent = sender + ": " + text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
