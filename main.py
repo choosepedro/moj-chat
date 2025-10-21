@@ -29,11 +29,13 @@ async def chat(request: Request):
             return JSONResponse({"reply": "❌ GROQ_API_KEY chýba na serveri."}, status_code=500)
 
         payload = {
-            "model": "llama3-8b-8192",  # alebo "qwen3-coder" ak plánuješ prepnúť
+            "model": "llama3-8b-8192",
             "messages": [
                 {"role": "system", "content": "Si priateľský slovenský chatbot."},
                 {"role": "user", "content": user_input}
-            ]
+            ],
+            "temperature": 0.7,      # ✅ Opravené
+            "max_tokens": 512        # ✅ Odporúča sa
         }
 
         headers = {
@@ -41,7 +43,6 @@ async def chat(request: Request):
             "Content-Type": "application/json"
         }
 
-        # ✅ Opravené URL (žiadne medzery)
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             json=payload,
@@ -49,7 +50,7 @@ async def chat(request: Request):
         )
 
         if response.status_code != 200:
-            print("DEBUG: Groq API chyba:", response.status_code, response.text)  # ← Dôležité pre ladenie
+            print("DEBUG: Groq API chyba:", response.status_code, response.text)
             return JSONResponse({
                 "reply": f"⚠️ API chyba: {response.status_code}",
                 "details": response.text
@@ -61,7 +62,7 @@ async def chat(request: Request):
         return {"reply": reply_text}
 
     except Exception as e:
-        print("DEBUG: Výnimka:", str(e))  # ← Pomôže pri ladení
+        print("DEBUG: Výnimka:", str(e))
         return JSONResponse({"reply": f"❌ Server error: {str(e)}"}, status_code=500)
 
 
