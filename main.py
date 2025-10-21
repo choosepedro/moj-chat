@@ -9,14 +9,13 @@ app = FastAPI()
 # ✅ Povolenie CORS, aby HTML frontend mohol volať API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # môžeš zmeniť na konkrétnu doménu, napr. ["https://moj-chat.onrender.com"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 API_KEY = os.getenv("GROQ_API_KEY")
-
 
 @app.post("/chat")
 async def chat(request: Request):
@@ -31,7 +30,7 @@ async def chat(request: Request):
             return JSONResponse({"reply": "❌ GROQ_API_KEY chýba na serveri."}, status_code=500)
 
         payload = {
-            "model": "llama3-8b-8192",  # model od Groq
+            "model": "llama3-8b-8192",
             "messages": [
                 {"role": "system", "content": "Si priateľský slovenský chatbot."},
                 {"role": "user", "content": user_input}
@@ -43,6 +42,7 @@ async def chat(request: Request):
             "Content-Type": "application/json"
         }
 
+        # ✅ Opravená URL (odstránené medzery na konci)
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             json=payload,
@@ -50,7 +50,7 @@ async def chat(request: Request):
         )
 
         if response.status_code != 200:
-            # 🔍 vrátime detaily chyby, ak Groq API vráti niečo iné než 200 OK
+            # 🔍 Detailnejšia chyba
             return JSONResponse({
                 "reply": f"⚠️ API chyba: {response.status_code}",
                 "details": response.text
